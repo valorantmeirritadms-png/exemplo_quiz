@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Vallenato Quiz — Orgullo Colombiano</title>
+
+  <!-- ── External Libraries ──────────────────────────────────────── -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- ── Google Fonts ────────────────────────────────────────────── -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Be+Vietnam+Pro:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- ── Tailwind Configuration ──────────────────────────────────── -->
+  <script src="js/tailwind.config.js"></script>
+
+  <!-- ── Application Styles ──────────────────────────────────────── -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- ── Data Layer ──────────────────────────────────────────────── -->
+  <script type="text/babel" src="js/data/i18n.js"></script>
+  <script type="text/babel" src="js/data/questions.js"></script>
+
+  <!-- ── Utilities & Constants ───────────────────────────────────── -->
+  <script type="text/babel" src="js/utils/helpers.js"></script>
+
+  <!-- ── Shared UI Components ────────────────────────────────────── -->
+  <script type="text/babel" src="js/components/shared.js"></script>
+
+  <!-- ── Screen Components ───────────────────────────────────────── -->
+  <script type="text/babel" src="js/components/HomeScreen.js"></script>
+  <script type="text/babel" src="js/components/QuestionScreen.js"></script>
+  <script type="text/babel" src="js/components/FeedbackScreen.js"></script>
+  <script type="text/babel" src="js/components/ResultsScreen.js"></script>
+
+  <!-- ── Application Entry Point ─────────────────────────────────── -->
+  <script type="text/babel" src="js/App.js"></script>
+</body>
+</html>

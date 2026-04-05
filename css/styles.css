@@ -1,0 +1,98 @@
+/* ─── Base ─────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff8ef; }
+
+/* ─── Material Symbols ─────────────────────────────────────────────── */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.fill-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+/* ─── Shadows & Effects ────────────────────────────────────────────── */
+.editorial-shadow { box-shadow: 0 32px 64px -12px rgba(113,92,0,0.12); }
+.btn-shadow       { box-shadow: 0 8px 24px rgba(113,92,0,0.25); }
+.glass {
+  background: rgba(125,160,255,0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ─── Decorative Pattern ───────────────────────────────────────────── */
+.confetti-pattern {
+  background-image:
+    radial-gradient(#fcd116 1px, transparent 1px),
+    radial-gradient(#c0001f 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  opacity: 0.12;
+}
+
+/* ─── Keyframe Animations ──────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(252,209,22,0.4); }
+  50%       { box-shadow: 0 0 0 12px rgba(252,209,22,0); }
+}
+
+@keyframes bounce-in {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.08); opacity: 1; }
+  70%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@keyframes progress-fill {
+  from { width: 0%; }
+}
+
+/* ─── Animation Utility Classes ────────────────────────────────────── */
+.anim-fade-up { animation: fadeInUp 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-fade    { animation: fadeIn 0.4s ease both; }
+.anim-scale   { animation: scaleIn 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-bounce  { animation: bounce-in 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+
+.delay-1 { animation-delay: 0.08s; }
+.delay-2 { animation-delay: 0.16s; }
+.delay-3 { animation-delay: 0.24s; }
+.delay-4 { animation-delay: 0.32s; }
+.delay-5 { animation-delay: 0.40s; }
+.delay-6 { animation-delay: 0.48s; }
+
+/* ─── Interactive Elements ─────────────────────────────────────────── */
+.option-btn { transition: all 0.22s cubic-bezier(0.22,1,0.36,1); }
+.option-btn:hover:not(:disabled)  { transform: translateX(4px); }
+.option-btn:active:not(:disabled) { transform: scale(0.97); }
+
+.lang-toggle  { transition: all 0.2s ease; }
+.progress-bar { transition: width 0.8s cubic-bezier(0.22,1,0.36,1); }
+
+/* ─── Custom Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #fff8ef; }
+::-webkit-scrollbar-thumb { background: #d0c6ab; border-radius: 99px; }
