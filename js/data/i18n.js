@@ -2,138 +2,170 @@
   ╔══════════════════════════════════════════════════════════════════╗
   ║                  js/data/i18n.js                                ║
   ║       Internacionalização — Textos em Dois Idiomas              ║
-  ╠══════════════════════════════════════════════════════════════════╣
-  ║  "i18n" é a abreviatura de "internationalisation" (i + 18       ║
-  ║  letras + n). É a prática de preparar uma aplicação para        ║
-  ║  suportar múltiplos idiomas.                                    ║
-  ║                                                                 ║
-  ║  Este ficheiro define um objecto com TODOS os textos visíveis   ║
-  ║  na interface, organizados por idioma:                          ║
-  ║    i18n.es → todos os textos em Espanhol                        ║
-  ║    i18n.pt → todos os textos em Português (do Brasil)           ║
-  ║                                                                 ║
-  ║  Como funciona na prática:                                      ║
-  ║    No App.js: const t = i18n[lang];                             ║
-  ║    Nos componentes: {t.start} → "Empezar" ou "Começar"          ║
-  ║    dependendo de 'lang' ('es' ou 'pt').                         ║
+  ║       ACTUALIZADO: Chaves para Login, Ranking, Perfil           ║
   ╚══════════════════════════════════════════════════════════════════╝
 */
 
-/*
-  O objecto i18n tem dois sub-objectos, um por idioma.
-  Cada chave (ex: 'appName', 'start') corresponde a um texto
-  que aparece algures na interface.
-  As chaves são IGUAIS em ambos os idiomas — só os valores mudam.
-*/
 const i18n = {
 
   /* ─── Textos em Espanhol ─────────────────────────────────────────── */
   es: {
-    appName:         "Vallenato Quiz",            // Nome da aplicação (igual em ambos os idiomas)
-    tagline:         "Edición Especial",           // Pequena etiqueta no banner principal
-    heroTitle1:      "Quiz:",                      // Primeira linha do título principal
-    heroTitle2:      "Orgullo",                    // Segunda linha (em dourado e itálico)
-    heroTitle3:      "Colombiano",                 // Terceira linha (em vermelho)
+    appName:         "Vallenato Quiz",
+    tagline:         "Edición Especial",
+    heroTitle1:      "Quiz:",
+    heroTitle2:      "Orgullo",
+    heroTitle3:      "Colombiano",
     heroDesc:        "Descubre la magia de nuestra tierra. Un viaje por los ritmos del acordeón, el aroma del café y la biodiversidad que nos hace únicos.",
-    start:           "Empezar",                   // Botão principal do HomeScreen
-    ranking:         "Ver Ranking",               // Botão secundário do HomeScreen
-    categories:      "Categorías Populares",      // Título da secção de categorias
-    seeAll:          "Ver todas",                 // Link "Ver todas" as categorias
+    start:           "Empezar",
+    ranking:         "Ver Ranking",
+    categories:      "Categorías Populares",
+    seeAll:          "Ver todas",
 
-    /* Cartão de Categoria 1 — Biodiversidade */
     cat1Name:        "Biodiversidad",
     cat1Desc:        "Desde las cumbres de los Andes hasta las profundidades del Amazonas.",
     cat1Count:       "15 Preguntas",
-
-    /* Cartão de Categoria 2 — Música e Arte */
     cat2Name:        "Música y Arte",
     cat2Desc:        "El vallenato, la cumbia y los maestros que pintaron nuestra historia.",
     cat2Count:       "20 Preguntas",
-
-    /* Cartão de Categoria 3 — História */
     cat3Name:        "Historia",
     cat3Desc:        "Los hitos que forjaron la identidad de la nación más acogedora.",
     cat3Count:       "12 Preguntas",
 
-    recordLabel:     "Récord Actual",             // Etiqueta da pílula flutuante no HomeScreen
+    recordLabel:     "Récord Actual",
 
-    /* Rodapé */
     copyright:       "© 2024 El Moderno Vallenato. Hecho con orgullo colombiano.",
     privacy:         "Privacidad",
     terms:           "Términos",
     contact:         "Contacto",
 
-    /* Navegação (cabeçalho e BottomNav) */
     explore:         "Explorar",
     play:            "Jugar",
     profile:         "Perfil",
 
-    /* Ecrã de perguntas */
-    question:        "Pregunta",                  // "Pregunta 3 de 10"
-    of:              "de",                         // "de" em "Pregunta X de Y"
-    prev:            "Anterior",                  // Botão voltar
-    next:            "Siguiente Pregunta",         // Botão avançar
+    question:        "Pregunta",
+    of:              "de",
+    prev:            "Anterior",
+    next:            "Siguiente Pregunta",
 
-    /* Ecrã de feedback */
-    correct:         "¡Correcto!",                // Quando acerta
-    incorrect:       "¡Incorrecto!",              // Quando erra
-    correctAnswer:   "La respuesta correcta era:", // Texto antes da resposta correcta
-    nextQuestion:    "Siguiente Pregunta",         // Botão no ecrã de feedback
-    knowledgeTitle:  "Conocimiento de Altura",     // Título grande quando acerta
-    almostTitle:     "¡Casi!",                     // Título grande quando erra
-    funFact:         "Dato Curioso",               // Etiqueta do cartão informativo
+    correct:         "¡Correcto!",
+    incorrect:       "¡Incorrecto!",
+    correctAnswer:   "La respuesta correcta era:",
+    nextQuestion:    "Siguiente Pregunta",
+    knowledgeTitle:  "Conocimiento de Altura",
+    almostTitle:     "¡Casi!",
+    funFact:         "Dato Curioso",
 
-    /* Ecrã de resultados */
     finalResult:     "Resultado Final",
     playAgain:       "Volver a jugar",
+    goHome:          "Volver al Inicio",
     shareScore:      "Compartir mi puntaje",
-    streak:          "Racha Ganadora",             // Maior sequência de acertos
-    streakSuffix:    "Preguntas seguidas",          // "3 Preguntas seguidas"
+    streak:          "Racha Ganadora",
+    streakSuffix:    "Preguntas seguidas",
     totalTime:       "Tiempo Total",
+    saveScore:       "Guardar Puntaje",
 
-    /* Níveis de desempenho (baseados na percentagem de acertos) */
-    expertLabel:     "¡Eres un experto en Colombia!",  // ≥ 80%
-    goodLabel:       "¡Muy buen resultado!",            // ≥ 50%
-    okLabel:         "Sigue aprendiendo.",              // < 50%
-    levelLegend:     "¡Nivel Leyenda!",                // Etiqueta do nível ≥ 80%
-    levelPro:        "¡Nivel Pro!",                    // Etiqueta do nível ≥ 50%
-    levelStudent:    "Nivel Aprendiz",                 // Etiqueta do nível < 50%
+    expertLabel:     "¡Eres un experto en Colombia!",
+    goodLabel:       "¡Muy buen resultado!",
+    okLabel:         "Sigue aprendiendo.",
+    levelLegend:     "¡Nivel Leyenda!",
+    levelPro:        "¡Nivel Pro!",
+    levelStudent:    "Nivel Aprendiz",
 
-    catLabel:        "Símbolos Patrios",               // Etiqueta de categoria (não usado actualmente)
-    chooseCategory:  "Elige una categoría para comenzar", // Instrução (não usado actualmente)
+    /* ── Login / Registro ─────────────────────────────── */
+    loginTitle:      "¡Hola, Maestro!",
+    loginSubtitle:   "Ingresa para continuar tu viaje musical.",
+    loginEmail:      "Correo Electrónico",
+    loginPassword:   "Contraseña",
+    loginBtn:        "Entrar al Quiz",
+    loginForgot:     "¿Olvidaste tu contraseña?",
+    loginOr:         "O continúa con",
+    loginNoAccount:  "¿Nuevo por aquí?",
+    loginCreateLink: "Crea tu cuenta",
+    loginGuest:      "Continuar sin cuenta",
+
+    registerTitle:   "Únete a la Fiesta",
+    registerSubtitle:"Crea tu cuenta para guardar tu progreso y ganar premios exclusivos.",
+    registerName:    "Nombre Completo",
+    registerEmail:   "Correo Electrónico",
+    registerPassword:"Contraseña",
+    registerBtn:     "Crear Cuenta",
+    registerHasAcc:  "¿Ya tienes una cuenta?",
+    registerBackLogin:"Volver al login",
+
+    /* ── Aviso pré-jogo (convite a loggar) ───────────────── */
+    inviteTag:       "Experiencia Exclusiva",
+    inviteTitle1:    "¿Quieres ver tu nombre en el",
+    inviteTitle2:    "Ranking",
+    inviteTitle3:    "?",
+    inviteDesc:      "Regístrate para guardar tu progreso y ganar medallas exclusivas.",
+    inviteCreate:    "Crear Cuenta",
+    inviteGuest:     "Continuar como invitado",
+    inviteMedals:    "Medallas",
+    inviteHistory:   "Historial",
+    invitePrizes:    "Premios",
+
+    /* ── Ranking ─────────────────────────────────────────── */
+    rankingTag:      "Competencia Global",
+    rankingTitle1:   "Orgullo",
+    rankingTitle2:   "Colombiano",
+    rankingDesc:     "Los guardianes de nuestra cultura. Un tributo a quienes llevan el ritmo del vallenato en el conocimiento.",
+    rankingChampion: "Campeón/a",
+    rankingPos:      "Puesto",
+    rankingPts:      "Puntos",
+    rankingYou:      "Tu posición actual",
+    rankingLevelUp:  "Subir de Nivel",
+    rankingCtaTitle: "¿Quieres estar en la cima?",
+    rankingCtaDesc:  "Sigue participando en los desafíos semanales para acumular puntos y demostrar tu conocimiento sobre la cultura colombiana.",
+    rankingDaily:    "Desafío Diario",
+    rankingDailyDesc:"Completa el quiz de hoy y gana un bono de +500 PTS.",
+    rankingStart:    "Empezar Ahora",
+
+    /* ── Perfil ───────────────────────────────────────────── */
+    profileLevel:    "Nivel",
+    profileXP:       "XP Total",
+    profileGlobal:   "Global",
+    profileProgress: "Progreso del Nivel",
+    profileStats:    "Estadísticas de Juego",
+    profileAcc:      "Precisión Media",
+    profileStreak:   "Racha Máxima",
+    profileTime:     "Tiempo Respuesta",
+    profileAchiev:   "Logros",
+    profileEdit:     "Editar Perfil Completo",
+    profileLogout:   "Cerrar Sesión",
+    profileLevelXP:  "XP para el siguiente nivel",
+    profileNotLogged:"No has iniciado sesión",
+    profileLoginBtn: "Iniciar Sesión",
   },
 
-  /* ─── Textos em Português ────────────────────────────────────────── */
+  /* ─── Textos em Português ─────────────────────────────────────────── */
   pt: {
-    appName:         "Vallenato Quiz",            // Mesmo nome em português
+    appName:         "Vallenato Quiz",
     tagline:         "Edição Especial",
     heroTitle1:      "Quiz:",
     heroTitle2:      "Orgulho",
     heroTitle3:      "Colombiano",
-    heroDesc:        "Descubra a magia da nossa terra. Uma viagem pelos ritmos do acordeão, o aroma do café e a biodiversidade que nos torna únicos.",
+    heroDesc:        "Descobre a magia da nossa terra. Uma viagem pelos ritmos da sanfona, o aroma do café e a biodiversidade que nos torna únicos.",
     start:           "Começar",
     ranking:         "Ver Ranking",
     categories:      "Categorias Populares",
     seeAll:          "Ver todas",
 
     cat1Name:        "Biodiversidade",
-    cat1Desc:        "Dos picos dos Andes até as profundezas da Amazônia.",
+    cat1Desc:        "Dos picos dos Andes às profundezas da Amazônia.",
     cat1Count:       "15 Perguntas",
-
     cat2Name:        "Música e Arte",
-    cat2Desc:        "O vallenato, a cumbia e os mestres que pintaram nossa história.",
+    cat2Desc:        "O vallenato, a cumbia e os mestres que pintaram a nossa história.",
     cat2Count:       "20 Perguntas",
-
     cat3Name:        "História",
     cat3Desc:        "Os marcos que forjaram a identidade da nação mais acolhedora.",
     cat3Count:       "12 Perguntas",
 
     recordLabel:     "Recorde Atual",
 
-    copyright:       "© 2024 O Moderno Vallenato. Feito com orgulho colombiano.",
+    copyright:       "© 2024 El Moderno Vallenato. Feito com orgulho colombiano.",
     privacy:         "Privacidade",
     terms:           "Termos",
-    contact:         "Contato",
+    contact:         "Contacto",
 
     explore:         "Explorar",
     play:            "Jogar",
@@ -148,25 +180,86 @@ const i18n = {
     incorrect:       "Incorreto!",
     correctAnswer:   "A resposta correta era:",
     nextQuestion:    "Próxima Pergunta",
-    knowledgeTitle:  "Conhecimento de Altitude",
+    knowledgeTitle:  "Conhecimento de Altura",
     almostTitle:     "Quase!",
     funFact:         "Curiosidade",
 
     finalResult:     "Resultado Final",
     playAgain:       "Jogar novamente",
-    shareScore:      "Compartilhar pontuação",
-    streak:          "Sequência Vencedora",
+    goHome:          "Voltar ao Início",
+    shareScore:      "Partilhar pontuação",
+    streak:          "Maior Sequência",
     streakSuffix:    "Perguntas seguidas",
     totalTime:       "Tempo Total",
+    saveScore:       "Guardar Pontuação",
 
-    expertLabel:     "Você é um especialista em Colômbia!",
+    expertLabel:     "És um especialista em Colômbia!",
     goodLabel:       "Muito bom resultado!",
-    okLabel:         "Continue aprendendo.",
+    okLabel:         "Continua a aprender.",
     levelLegend:     "Nível Lenda!",
     levelPro:        "Nível Pro!",
     levelStudent:    "Nível Aprendiz",
 
-    catLabel:        "Símbolos Pátrios",
-    chooseCategory:  "Escolha uma categoria para começar",
+    /* ── Login / Registro ─────────────────────────────── */
+    loginTitle:      "Olá, Maestro!",
+    loginSubtitle:   "Entra para continuar a tua jornada musical.",
+    loginEmail:      "Correio Electrónico",
+    loginPassword:   "Password",
+    loginBtn:        "Entrar no Quiz",
+    loginForgot:     "Esqueceu a password?",
+    loginOr:         "Ou continua com",
+    loginNoAccount:  "Novo por aqui?",
+    loginCreateLink: "Cria a tua conta",
+    loginGuest:      "Continuar sem conta",
+
+    registerTitle:   "Junta-te à Festa",
+    registerSubtitle:"Cria a tua conta para guardar o teu progresso e ganhar prémios exclusivos.",
+    registerName:    "Nome Completo",
+    registerEmail:   "Correio Electrónico",
+    registerPassword:"Password",
+    registerBtn:     "Criar Conta",
+    registerHasAcc:  "Já tens uma conta?",
+    registerBackLogin:"Voltar ao login",
+
+    inviteTag:       "Experiência Exclusiva",
+    inviteTitle1:    "Queres ver o teu nome no",
+    inviteTitle2:    "Ranking",
+    inviteTitle3:    "?",
+    inviteDesc:      "Regista-te para guardar o teu progresso e ganhar medalhas exclusivas.",
+    inviteCreate:    "Criar Conta",
+    inviteGuest:     "Continuar como convidado",
+    inviteMedals:    "Medalhas",
+    inviteHistory:   "Histórico",
+    invitePrizes:    "Prémios",
+
+    rankingTag:      "Competição Global",
+    rankingTitle1:   "Orgulho",
+    rankingTitle2:   "Colombiano",
+    rankingDesc:     "Os guardiões da nossa cultura. Uma homenagem a quem carrega o ritmo do vallenato no conhecimento.",
+    rankingChampion: "Campeão/ã",
+    rankingPos:      "Lugar",
+    rankingPts:      "Pontos",
+    rankingYou:      "A tua posição atual",
+    rankingLevelUp:  "Subir de Nível",
+    rankingCtaTitle: "Queres estar no topo?",
+    rankingCtaDesc:  "Continua a participar nos desafios semanais para acumular pontos e demonstrar o teu conhecimento sobre a cultura colombiana.",
+    rankingDaily:    "Desafio Diário",
+    rankingDailyDesc:"Completa o quiz de hoje e ganha um bónus de +500 PTS.",
+    rankingStart:    "Começar Agora",
+
+    profileLevel:    "Nível",
+    profileXP:       "XP Total",
+    profileGlobal:   "Global",
+    profileProgress: "Progresso do Nível",
+    profileStats:    "Estatísticas de Jogo",
+    profileAcc:      "Precisão Média",
+    profileStreak:   "Sequência Máxima",
+    profileTime:     "Tempo de Resposta",
+    profileAchiev:   "Conquistas",
+    profileEdit:     "Editar Perfil Completo",
+    profileLogout:   "Terminar Sessão",
+    profileLevelXP:  "XP para o próximo nível",
+    profileNotLogged:"Não iniciaste sessão",
+    profileLoginBtn: "Iniciar Sessão",
   },
 };

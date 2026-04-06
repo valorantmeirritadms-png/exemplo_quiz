@@ -2,85 +2,14 @@
   ╔══════════════════════════════════════════════════════════════════╗
   ║               js/utils/helpers.js                               ║
   ║         Funções Auxiliares e Constantes Globais                 ║
-  ╠══════════════════════════════════════════════════════════════════╣
-  ║  Este ficheiro é carregado antes de todos os componentes.       ║
-  ║  Contém:                                                        ║
-  ║    • formatTime()    — Formata segundos em "MM:SS"              ║
-  ║    • LETTERS         — Array com as letras A, B, C, D           ║
-  ║    • IMAGES          — URLs das imagens usadas na aplicação     ║
-  ║    • QUESTION_TIME   — Duração do temporizador por pergunta     ║
   ╚══════════════════════════════════════════════════════════════════╝
 */
 
-
-/*
-  ─── FUNÇÃO: formatTime ──────────────────────────────────────────────
-  Converte um número de segundos no formato de texto "MM:SS"
-  (minutos:segundos) para mostrar no relógio do quiz.
-
-  Exemplos:
-    formatTime(0)   → "00:00"
-    formatTime(5)   → "00:05"
-    formatTime(60)  → "01:00"
-    formatTime(75)  → "01:15"
-    formatTime(3661)→ "61:01" (não limita horas)
-
-  @param {number} s - O total de segundos a formatar
-  @returns {string} - Texto no formato "MM:SS"
-*/
 const formatTime = (s) =>
-    /*
-      Esta é uma arrow function de uma linha (sem chaves {}).
-      O template literal (crase `) permite inserir expressões ${...} no texto.
-
-      Math.floor(s / 60) — Calcula os minutos (parte inteira da divisão por 60).
-        Ex: 75 / 60 = 1.25 → Math.floor(1.25) = 1 minuto
-
-      s % 60 — Calcula os segundos restantes (resto da divisão por 60).
-        Ex: 75 % 60 = 15 segundos
-
-      .padStart(2, '0') — Garante que o número tem sempre 2 dígitos,
-        adicionando um zero à esquerda se necessário.
-        Ex: String(5).padStart(2, '0') → "05"
-            String(12).padStart(2, '0') → "12" (já tem 2 dígitos, não altera)
-
-      String(...) — Converte o número para texto antes de usar .padStart().
-    */
     `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
-
-/*
-  ─── CONSTANTE: LETTERS ──────────────────────────────────────────────
-  Array com as quatro letras usadas como identificadores das opções
-  de resposta (A, B, C, D).
-
-  Usado em QuestionScreen.js para mostrar a letra antes de cada opção:
-    LETTERS[0] → 'A'
-    LETTERS[1] → 'B'
-    LETTERS[2] → 'C'
-    LETTERS[3] → 'D'
-*/
 const LETTERS = ['A', 'B', 'C', 'D'];
 
-
-/*
-  ─── CONSTANTE: IMAGES ───────────────────────────────────────────────
-  Objecto com os URLs das imagens usadas em diferentes ecrãs.
-  Usar um objecto central facilita a manutenção: se o URL mudar,
-  só é necessário alterar aqui, e não em cada componente que usa a imagem.
-
-  Todas as imagens são do Unsplash (banco de imagens gratuito).
-  Os parâmetros no URL:
-    w=800   → largura máxima em píxeis (reduz o tamanho do ficheiro)
-    q=80    → qualidade JPEG (80% — boa qualidade, ficheiro mais pequeno)
-
-  Uso:
-    hero:        Paisagem colombiana — usada no ecrã inicial e FeedbackScreen (quando errou)
-    coffee:      Xícara de café     — usada no bento grid do HomeScreen
-    condor:      Cóndor dos Andes   — usada no FeedbackScreen (quando acertou)
-    celebration: Celebração         — usada no ResultsScreen
-    orchid:      Orquídea           — usada no bento grid do HomeScreen
-*/
 const IMAGES = {
   hero:        "https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?w=800&q=80",
   coffee:      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80",
@@ -89,15 +18,101 @@ const IMAGES = {
   orchid:      "https://images.unsplash.com/photo-1490750967868-88df5691cc7b?w=600&q=80",
 };
 
+const QUESTION_TIME = 60;
 
 /*
-  ─── CONSTANTE: QUESTION_TIME ────────────────────────────────────────
-  Duração do temporizador para cada pergunta, em segundos.
-  Actualmente definido como 60 segundos (1 minuto por pergunta).
-
-  Para alterar o tempo, basta mudar este valor aqui.
-  O App.js usa esta constante em:
-    const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
-    setTimeLeft(QUESTION_TIME); // ao reiniciar o temporizador
+  ── SISTEMA DE AUTH LOCAL ──────────────────────────────────────────
+  Simula autenticação com localStorage.
+  Numa produção real, estas funções fariam chamadas ao servidor PHP/MySQL.
 */
-const QUESTION_TIME = 60;
+
+const Auth = {
+  /* Devolve o utilizador actual ou null se não logado */
+  getUser: () => {
+    try {
+      const u = localStorage.getItem('quiz_user');
+      return u ? JSON.parse(u) : null;
+    } catch { return null; }
+  },
+
+  /* Faz login (simulado — verifica apenas que o email existe) */
+  login: (email, password) => {
+    try {
+      const users = JSON.parse(localStorage.getItem('quiz_users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+      if (user) {
+        localStorage.setItem('quiz_user', JSON.stringify(user));
+        return { ok: true, user };
+      }
+      return { ok: false, error: 'Credenciais inválidas' };
+    } catch { return { ok: false, error: 'Erro interno' }; }
+  },
+
+  /* Regista novo utilizador */
+  register: (name, email, password) => {
+    try {
+      const users = JSON.parse(localStorage.getItem('quiz_users') || '[]');
+      if (users.find(u => u.email === email)) {
+        return { ok: false, error: 'Email já registado' };
+      }
+      const user = { id: Date.now(), name, email, password, avatar: null, xp: 0, level: 1 };
+      users.push(user);
+      localStorage.setItem('quiz_users', JSON.stringify(users));
+      localStorage.setItem('quiz_user', JSON.stringify(user));
+      return { ok: true, user };
+    } catch { return { ok: false, error: 'Erro interno' }; }
+  },
+
+  /* Termina sessão */
+  logout: () => {
+    localStorage.removeItem('quiz_user');
+  },
+
+  /* Guarda resultado do quiz para o ranking */
+  saveScore: (score, total, totalTime, maxStreak) => {
+    try {
+      const user = Auth.getUser();
+      const entry = {
+        id: Date.now(),
+        userId: user ? user.id : null,
+        userName: user ? user.name : 'Convidado',
+        score,
+        total,
+        totalTime,
+        maxStreak,
+        date: new Date().toISOString(),
+      };
+      const scores = JSON.parse(localStorage.getItem('quiz_scores') || '[]');
+      scores.push(entry);
+      localStorage.setItem('quiz_scores', JSON.stringify(scores));
+
+      /* Actualizar XP do utilizador logado */
+      if (user) {
+        const pts = score * 100 + Math.max(0, 600 - totalTime) * 5;
+        user.xp = (user.xp || 0) + pts;
+        user.level = Math.floor(user.xp / 1000) + 1;
+        /* Actualizar na lista de users */
+        const users = JSON.parse(localStorage.getItem('quiz_users') || '[]');
+        const idx = users.findIndex(u => u.id === user.id);
+        if (idx >= 0) users[idx] = user;
+        localStorage.setItem('quiz_users', JSON.stringify(users));
+        localStorage.setItem('quiz_user', JSON.stringify(user));
+      }
+      return entry;
+    } catch { return null; }
+  },
+
+  /* Devolve ranking ordenado por score */
+  getRanking: () => {
+    try {
+      const scores = JSON.parse(localStorage.getItem('quiz_scores') || '[]');
+      /* Agrupa por utilizador — pega melhor score */
+      const map = {};
+      scores.forEach(s => {
+        const key = s.userId || s.userName;
+        if (!map[key] || s.score > map[key].score) map[key] = s;
+      });
+      return Object.values(map).sort((a, b) => b.score - a.score || a.totalTime - b.totalTime);
+    } catch { return []; }
+  },
+};
