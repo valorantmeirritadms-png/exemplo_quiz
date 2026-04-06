@@ -1,0 +1,11 @@
+# Ignorar configurações do IntelliJ/WebStorm/PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+*.xml
+
+
+# Opcional: Ignorar logs e arquivos temporários
+*.log
+node_modules/
