@@ -1,46 +1,170 @@
 <!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║                       VALLENATO QUIZ                            ║
+  ║              Ficheiro: index.html  (Página Principal)           ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║  Este é o ÚNICO ficheiro HTML da aplicação.                     ║
+  ║  A sua função é:                                                ║
+  ║    1. Carregar todas as bibliotecas externas (React, Tailwind…) ║
+  ║    2. Carregar as fontes do Google                              ║
+  ║    3. Carregar os nossos ficheiros JavaScript e CSS             ║
+  ║    4. Definir o ponto de entrada onde o React vai "encaixar"    ║
+  ║       toda a aplicação (<div id="root">)                        ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+
+<!--
+  "lang=es" diz ao navegador que o conteúdo principal está em espanhol.
+  Importante para acessibilidade e motores de busca.
+-->
 <html lang="es">
+
 <head>
+  <!-- Define a codificação de caracteres como UTF-8 para suportar acentos,
+       emojis e caracteres especiais de qualquer idioma. -->
   <meta charset="utf-8" />
+
+  <!-- Instrui o navegador para que a página ocupe 100% da largura
+       do ecrã no telemóvel, sem zoom automático. Essencial para design responsivo. -->
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+  <!-- O título que aparece no separador do navegador e nos motores de busca. -->
   <title>Vallenato Quiz — Orgullo Colombiano</title>
 
-  <!-- ── External Libraries ──────────────────────────────────────── -->
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BIBLIOTECAS EXTERNAS (carregadas da internet via CDN)
+       CDN = Content Delivery Network = servidores rápidos espalhados
+       pelo mundo que entregam ficheiros populares.
+       ════════════════════════════════════════════════════════════════ -->
+
+  <!--
+    TAILWIND CSS — Uma biblioteca de CSS utilitária.
+    Em vez de escrever CSS personalizado para cada botão/caixa,
+    usamos classes prontas como "rounded-full" (bordas redondas),
+    "flex" (layout flexível), "p-4" (padding de 4 unidades), etc.
+    O plugin "forms" melhora o estilo dos formulários.
+    O plugin "container-queries" permite estilos baseados no tamanho do elemento pai.
+  -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!--
+    REACT (versão de produção, minificada) — Biblioteca principal de interface.
+    React permite criar componentes reutilizáveis e actualiza automaticamente
+    o ecrã quando os dados mudam, sem recarregar a página inteira.
+    Esta tag carrega o núcleo do React (lógica de componentes).
+  -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+
+  <!--
+    REACT-DOM — A "ponte" entre o React e o HTML real da página.
+    Enquanto o React trabalha internamente com uma representação virtual
+    da página (Virtual DOM), o ReactDOM é responsável por actualizar
+    o HTML verdadeiro no navegador.
+  -->
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!--
+    BABEL STANDALONE — Um transpilador (tradutor de código).
+    Os nossos ficheiros .js usam JSX (uma mistura de JavaScript + HTML),
+    uma sintaxe que os navegadores não entendem nativamente.
+    O Babel converte esse JSX em JavaScript puro em tempo real no navegador.
+    Nota: em produção real, esta conversão seria feita antes de publicar o site.
+  -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- ── Google Fonts ────────────────────────────────────────────── -->
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FONTES DO GOOGLE
+       Carregamos duas famílias de fontes tipográficas personalizadas.
+       ════════════════════════════════════════════════════════════════ -->
+
+  <!--
+    "Plus Jakarta Sans" — Usada para títulos e cabeçalhos (font-headline).
+    "Be Vietnam Pro" — Usada para texto corrido e etiquetas (font-body / font-label).
+    Os parâmetros ital,wght definem as variações de estilo e peso carregadas.
+  -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Be+Vietnam+Pro:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <!--
+    Material Symbols Outlined — Uma biblioteca de ícones do Google.
+    Em vez de imagens, usamos fontes de ícones: escrevemos o nome do ícone
+    dentro de uma tag <span> e o navegador mostra o símbolo correspondente.
+    Ex: <span class="material-symbols-outlined">timer</span> mostra um relógio.
+  -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-  <!-- ── Tailwind Configuration ──────────────────────────────────── -->
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FICHEIROS LOCAIS DO PROJECTO
+       ════════════════════════════════════════════════════════════════ -->
+
+  <!--
+    Configuração personalizada do Tailwind CSS.
+    Define as cores, fontes e bordas específicas deste projecto.
+    Tem de ser carregado DEPOIS do script do Tailwind acima.
+  -->
   <script src="js/tailwind.config.js"></script>
 
-  <!-- ── Application Styles ──────────────────────────────────────── -->
+  <!--
+    Folha de estilos CSS personalizada do projecto.
+    Contém animações, sombras, efeitos de vidro (glass) e outros
+    estilos que o Tailwind sozinho não cobre.
+  -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body>
-  <div id="root"></div>
+<!--
+  Este <div> com id="root" é o PONTO DE ENTRADA da aplicação React.
+  Está completamente vazio no HTML — o React irá preencher todo o
+  conteúdo aqui dentro dinamicamente via JavaScript.
+  Olha para o final do ficheiro App.js para ver como isso acontece:
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+-->
+<div id="root"></div>
 
-  <!-- ── Data Layer ──────────────────────────────────────────────── -->
-  <script type="text/babel" src="js/data/i18n.js"></script>
-  <script type="text/babel" src="js/data/questions.js"></script>
 
-  <!-- ── Utilities & Constants ───────────────────────────────────── -->
-  <script type="text/babel" src="js/utils/helpers.js"></script>
+<!-- ════════════════════════════════════════════════════════════════
+     SCRIPTS JAVASCRIPT DA APLICAÇÃO
+     IMPORTANTE: A ORDEM AQUI É OBRIGATÓRIA!
+     Cada ficheiro usa variáveis/funções definidas nos anteriores,
+     por isso têm de ser carregados exactamente nesta sequência.
 
-  <!-- ── Shared UI Components ────────────────────────────────────── -->
-  <script type="text/babel" src="js/components/shared.js"></script>
+     type="text/babel" diz ao Babel para processar estes ficheiros
+     antes de o navegador os executar (conversão JSX → JavaScript).
+     ════════════════════════════════════════════════════════════════ -->
 
-  <!-- ── Screen Components ───────────────────────────────────────── -->
-  <script type="text/babel" src="js/components/HomeScreen.js"></script>
-  <script type="text/babel" src="js/components/QuestionScreen.js"></script>
-  <script type="text/babel" src="js/components/FeedbackScreen.js"></script>
-  <script type="text/babel" src="js/components/ResultsScreen.js"></script>
+<!-- 1º: Dados — textos em dois idiomas (espanhol e português) -->
+<script type="text/babel" src="js/data/i18n.js"></script>
 
-  <!-- ── Application Entry Point ─────────────────────────────────── -->
-  <script type="text/babel" src="js/App.js"></script>
+<!-- 2º: Dados — lista de perguntas do quiz -->
+<script type="text/babel" src="js/data/questions.js"></script>
+
+<!-- 3º: Utilitários — funções auxiliares e constantes globais -->
+<script type="text/babel" src="js/utils/helpers.js"></script>
+
+<!-- 4º: Componentes partilhados — ícone, cabeçalho, rodapé, navegação -->
+<script type="text/babel" src="js/components/shared.js"></script>
+
+<!-- 5º: Ecrã inicial (página de boas-vindas) -->
+<script type="text/babel" src="js/components/HomeScreen.js"></script>
+
+<!-- 6º: Ecrã das perguntas (onde o utilizador responde) -->
+<script type="text/babel" src="js/components/QuestionScreen.js"></script>
+
+<!-- 7º: Ecrã de feedback (resposta certa ou errada) -->
+<script type="text/babel" src="js/components/FeedbackScreen.js"></script>
+
+<!-- 8º: Ecrã de resultados finais (pontuação total) -->
+<script type="text/babel" src="js/components/ResultsScreen.js"></script>
+
+<!--
+  9º (ÚLTIMO): App.js — O componente raiz que une tudo.
+  Tem de ser o último porque usa todos os componentes definidos acima.
+  É aqui que se chama o ReactDOM.createRoot() para iniciar a aplicação.
+-->
+<script type="text/babel" src="js/App.js"></script>
 </body>
 </html>
