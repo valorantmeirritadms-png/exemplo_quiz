@@ -361,8 +361,8 @@ async def startup_event():
     
     # Write test credentials
     import os as os_module
-    memory_dir = Path("/app/memory")
-    memory_dir.mkdir(exist_ok=True)
+    memory_dir = Path("./memory")
+    memory_dir.mkdir(exist_ok=True, parents=True)
     with open(memory_dir / "test_credentials.md", "w") as f:
         f.write(f"""# Test Credentials
 
