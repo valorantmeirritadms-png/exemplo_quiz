@@ -39,7 +39,7 @@ export default function Quiz() {
 
   const fetchQuestions = async () => {
     try {
-      const response = await axios.get(`${API}/quiz/level/${level}?lang=${lang}`);
+      const response = await axios.get(`${API}/quiz/level/${level}?lang=${lang}`, { withCredentials: true });
       setQuestions(response.data.questions);
       setTema(response.data.tema);
       setLoading(false);

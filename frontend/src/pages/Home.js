@@ -24,7 +24,7 @@ export default function Home() {
 
   const fetchLevels = async () => {
     try {
-      const response = await axios.get(`${API}/quiz/levels`);
+      const response = await axios.get(`${API}/quiz/levels`, { withCredentials: true });
       setLevels(response.data);
     } catch (error) {
       console.error('Error fetching levels:', error);

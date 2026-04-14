@@ -12,7 +12,7 @@ function App() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/exemplo_quiz">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
