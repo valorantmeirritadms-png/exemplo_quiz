@@ -217,8 +217,8 @@ async def register(user: UserRegister, response: Response):
     access_token = create_access_token(user_id, email)
     refresh_token = create_refresh_token(user_id)
     
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="lax", max_age=604800, path="/")
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
     
     return {"id": user_id, "name": user.name, "email": email, "role": "user"}
 
@@ -236,8 +236,8 @@ async def login(user: UserLogin, response: Response):
     access_token = create_access_token(user_id, email)
     refresh_token = create_refresh_token(user_id)
     
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="lax", max_age=604800, path="/")
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
     
     return {"id": user_id, "name": existing["name"], "email": email, "role": existing.get("role", "user")}
 
@@ -268,7 +268,7 @@ async def refresh_token(request: Request, response: Response):
         
         user_id = str(user["_id"])
         access_token = create_access_token(user_id, user["email"])
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
+        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
         
         return {"message": "Token refreshed"}
     except jwt.ExpiredSignatureError:
@@ -328,9 +328,17 @@ async def root():
 app.include_router(api_router)
 
 # CORS
+frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000").rstrip("/")
+# O browser envia sempre a origem sem path (ex: https://valorantmeirritadms-png.github.io)
+# Então precisamos extrair só o scheme+host caso o FRONTEND_URL tenha um path
+from urllib.parse import urlparse
+parsed = urlparse(frontend_url)
+origin_only = f"{parsed.scheme}://{parsed.netloc}"
+allowed_origins = list({frontend_url, origin_only})  # garante ambas as formas
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.environ.get("FRONTEND_URL", "http://localhost:3000")],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
