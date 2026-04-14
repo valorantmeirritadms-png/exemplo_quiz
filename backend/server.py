@@ -956,16 +956,20 @@ async def root():
 
 # ============================================
 # CONFIGURAÇÃO CORS E MIDDLEWARE
+# CORS deve ser registado ANTES do router
 # ============================================
-app.include_router(api_router)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins= ["https://valorantmeirritadms-png.github.io/exemplo_quiz", "https://valorantmeirritadms-png.github.io"],
+    allow_origins=[
+        "https://valorantmeinitadms-png.github.io",
+        "https://valorantmeinitadms-png.github.io/exemplo_quiz",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router)
 
 # ============================================
 # EVENTOS DE STARTUP
