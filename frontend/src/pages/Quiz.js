@@ -1,11 +1,23 @@
+/**
+ * Página do Quiz
+ * 
+ * ALTERAÇÕES:
+ * - Perguntas são embaralhadas aleatoriamente pelo backend
+ * - Feedback enriquecido com curiosidades sobre cada pergunta
+ * - Design mais vivo com animações
+ * - Submissão de pontuação para o ranking
+ * - Todos os elementos comentados
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useProgress } from '../hooks/useProgress';
 import Header from '../components/Header';
-import { ArrowRight, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
+import { ArrowRight, CheckCircle, XCircle, ArrowLeft, Lightbulb, PartyPopper, Frown } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -13,8 +25,10 @@ export default function Quiz() {
   const { levelId } = useParams();
   const navigate = useNavigate();
   const { t, lang } = useLanguage();
+  const { user } = useAuth();
   const { completeLevel, isLevelUnlocked } = useProgress();
 
+  // Estados do quiz
   const [questions, setQuestions] = useState([]);
   const [tema, setTema] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -22,6 +36,7 @@ export default function Quiz() {
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState('');
+  const [curiosidade, setCuriosidade] = useState(''); // ALTERAÇÃO: Estado para curiosidade
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [quizComplete, setQuizComplete] = useState(false);
@@ -29,6 +44,7 @@ export default function Quiz() {
 
   const level = parseInt(levelId);
 
+  // Carregar perguntas ao montar
   useEffect(() => {
     if (!isLevelUnlocked(level)) {
       navigate('/');
@@ -37,6 +53,10 @@ export default function Quiz() {
     fetchQuestions();
   }, [level, lang]);
 
+  /**
+   * Busca as perguntas do nível
+   * ALTERAÇÃO: Backend agora retorna perguntas embaralhadas
+   */
   const fetchQuestions = async () => {
     try {
       const response = await axios.get(`${API}/quiz/level/${level}?lang=${lang}`, { withCredentials: true });
@@ -49,19 +69,25 @@ export default function Quiz() {
     }
   };
 
+  /**
+   * Handler para seleção de resposta
+   * ALTERAÇÃO: Agora recebe curiosidade do backend
+   */
   const handleAnswerSelect = async (answer) => {
     if (showResult) return;
     
     setSelectedAnswer(answer);
     
     try {
-      const response = await axios.post(`${API}/quiz/check-answer`, {
+      // ALTERAÇÃO: Passando lang para receber curiosidade no idioma correto
+      const response = await axios.post(`${API}/quiz/check-answer?lang=${lang}`, {
         question_id: questions[currentIndex].id,
         answer: answer
-      });
+      }, { withCredentials: true });
       
       setIsCorrect(response.data.correct);
       setCorrectAnswer(response.data.correct_answer);
+      setCuriosidade(response.data.curiosidade); // ALTERAÇÃO: Guardar curiosidade
       
       if (response.data.correct) {
         setScore(prev => prev + 1);
@@ -73,18 +99,34 @@ export default function Quiz() {
     }
   };
 
-  const handleNext = () => {
+  /**
+   * Avança para a próxima pergunta ou finaliza o quiz
+   */
+  const handleNext = async () => {
     if (currentIndex < questions.length - 1) {
+      // Próxima pergunta
       setCurrentIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
       setIsCorrect(false);
       setCorrectAnswer('');
+      setCuriosidade(''); // ALTERAÇÃO: Limpar curiosidade
     } else {
-      // Quiz complete
+      // Quiz completo
       const finalScore = score;
       const wasNextLevelLocked = level < 5 && !isLevelUnlocked(level + 1);
       completeLevel(level, finalScore, questions.length);
+      
+      // ALTERAÇÃO: Submeter pontuação para o ranking
+      try {
+        await axios.post(`${API}/ranking/submit`, {
+          level: level,
+          score: finalScore,
+          total: questions.length
+        }, { withCredentials: true });
+      } catch (error) {
+        console.log('Could not submit score to ranking');
+      }
       
       if (wasNextLevelLocked && finalScore >= 6) {
         setNewLevelUnlocked(true);
@@ -93,6 +135,9 @@ export default function Quiz() {
     }
   };
 
+  /**
+   * Retorna a classe CSS para a opção baseado no estado
+   */
   const getOptionClass = (option) => {
     if (!showResult) {
       return selectedAnswer === option ? 'quiz-option selected' : 'quiz-option';
@@ -109,6 +154,7 @@ export default function Quiz() {
     return 'quiz-option';
   };
 
+  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FFFDF7]">
@@ -120,6 +166,7 @@ export default function Quiz() {
     );
   }
 
+  // Tela de resultados finais
   if (quizComplete) {
     const percentage = (score / questions.length) * 100;
     const isPassing = percentage >= 60;
@@ -134,16 +181,17 @@ export default function Quiz() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
+            {/* Ícone de resultado com animação */}
             <motion.div
               className={`w-24 h-24 mx-auto mb-6 rounded-2xl border-2 border-[#0F172A] flex items-center justify-center shadow-[4px_4px_0px_#0F172A] ${isPassing ? 'bg-[#22C55E]' : 'bg-[#CE1126]'}`}
-              initial={{ rotate: -10 }}
-              animate={{ rotate: 0 }}
+              initial={{ rotate: -10, scale: 0.8 }}
+              animate={{ rotate: 0, scale: 1 }}
               transition={{ type: 'spring', stiffness: 200 }}
             >
               {isPassing ? (
-                <CheckCircle className="w-12 h-12 text-white" />
+                <PartyPopper className="w-12 h-12 text-white" />
               ) : (
-                <XCircle className="w-12 h-12 text-white" />
+                <Frown className="w-12 h-12 text-white" />
               )}
             </motion.div>
 
@@ -155,21 +203,23 @@ export default function Quiz() {
               {t('levelCompleted')}: {tema}
             </p>
 
-            <div className="bg-[#FFFDF7] border-2 border-[#0F172A] rounded-2xl p-6 mb-6 shadow-[4px_4px_0px_#0F172A]">
-              <p className="text-sm font-semibold text-[#475569] uppercase tracking-wide mb-2">
+            {/* Card de pontuação */}
+            <div className="bg-[#E8F4FD] border-2 border-[#003893] rounded-2xl p-6 mb-6 shadow-[4px_4px_0px_#003893]">
+              <p className="text-sm font-semibold text-[#003893] uppercase tracking-wide mb-2">
                 {t('yourScore')}
               </p>
-              <p className="text-5xl font-black text-[#0F172A]">
+              <p className="text-5xl font-black text-[#003893]">
                 {score}/{questions.length}
               </p>
-              <div className="mt-4 progress-bar">
+              <div className="mt-4 progress-bar-blue">
                 <div 
-                  className="progress-fill"
+                  className="progress-fill-blue"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
             </div>
 
+            {/* Mensagem de nível desbloqueado */}
             {newLevelUnlocked && (
               <motion.div
                 className="bg-[#FFD100]/20 border-2 border-[#FFD100] rounded-xl p-4 mb-6"
@@ -181,6 +231,7 @@ export default function Quiz() {
               </motion.div>
             )}
 
+            {/* Botões de ação */}
             <div className="flex flex-col sm:flex-row gap-3">
               <motion.button
                 onClick={() => navigate('/')}
@@ -194,12 +245,15 @@ export default function Quiz() {
               
               <motion.button
                 onClick={() => {
+                  // Reset do quiz
                   setCurrentIndex(0);
                   setScore(0);
                   setSelectedAnswer(null);
                   setShowResult(false);
                   setQuizComplete(false);
                   setNewLevelUnlocked(false);
+                  setCuriosidade('');
+                  fetchQuestions(); // ALTERAÇÃO: Recarregar perguntas (novo shuffle)
                 }}
                 className="btn-primary flex-1 flex items-center justify-center gap-2"
                 whileTap={{ scale: 0.98 }}
@@ -209,6 +263,14 @@ export default function Quiz() {
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
             </div>
+
+            {/* ALTERAÇÃO: Link para ranking */}
+            <button
+              onClick={() => navigate('/ranking')}
+              className="mt-4 text-[#003893] font-bold hover:underline"
+            >
+              📊 Ver Ranking Global
+            </button>
           </motion.div>
         </div>
       </div>
@@ -222,7 +284,7 @@ export default function Quiz() {
       <Header />
       
       <div className="max-w-3xl mx-auto px-4 py-8">
-        {/* Progress */}
+        {/* Barra de progresso e navegação */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
@@ -234,18 +296,19 @@ export default function Quiz() {
                 <ArrowLeft className="w-5 h-5 text-[#0F172A]" />
               </button>
               <div>
-                <p className="text-sm font-semibold text-[#475569] uppercase tracking-wide">
+                <p className="text-sm font-semibold text-[#003893] uppercase tracking-wide">
                   {t('level')} {level} • {tema}
                 </p>
               </div>
             </div>
-            <div className="bg-white border-2 border-[#0F172A] rounded-lg px-4 py-2 shadow-[2px_2px_0px_#0F172A]">
-              <span className="font-bold text-[#0F172A]">
+            <div className="bg-[#003893] text-white border-2 border-[#0F172A] rounded-lg px-4 py-2 shadow-[2px_2px_0px_#0F172A]">
+              <span className="font-bold">
                 {t('question')} {currentIndex + 1} {t('of')} {questions.length}
               </span>
             </div>
           </div>
           
+          {/* Barra de progresso */}
           <div className="progress-bar">
             <div 
               className="progress-fill"
@@ -254,7 +317,7 @@ export default function Quiz() {
           </div>
         </div>
 
-        {/* Question */}
+        {/* Pergunta e opções com animação */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -263,13 +326,14 @@ export default function Quiz() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="bg-white border-2 border-[#0F172A] rounded-2xl p-6 md:p-8 mb-6 shadow-[6px_6px_0px_#0F172A]">
+            {/* Card da pergunta */}
+            <div className="bg-white border-2 border-[#0F172A] rounded-2xl p-6 md:p-8 mb-6 shadow-[6px_6px_0px_#003893]">
               <h2 className="text-xl md:text-2xl font-bold text-[#0F172A] text-center">
                 {currentQuestion.pergunta}
               </h2>
             </div>
 
-            {/* Options */}
+            {/* Grid de opções */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {currentQuestion.opcoes.map((option, index) => (
                 <motion.button
@@ -280,7 +344,8 @@ export default function Quiz() {
                   disabled={showResult}
                   data-testid={`quiz-option-${index}`}
                 >
-                  <span className="mr-3 w-8 h-8 flex-shrink-0 bg-[#FFFDF7] border-2 border-[#0F172A] rounded-lg flex items-center justify-center font-bold text-sm">
+                  {/* Badge da letra */}
+                  <span className="mr-3 w-8 h-8 flex-shrink-0 bg-[#E8F4FD] border-2 border-[#003893] rounded-lg flex items-center justify-center font-bold text-sm text-[#003893]">
                     {String.fromCharCode(65 + index)}
                   </span>
                   {option}
@@ -288,29 +353,50 @@ export default function Quiz() {
               ))}
             </div>
 
-            {/* Result feedback */}
+            {/* ALTERAÇÃO: Card de feedback com curiosidade */}
             <AnimatePresence>
               {showResult && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className={`p-4 rounded-xl border-2 border-[#0F172A] mb-6 ${isCorrect ? 'bg-[#22C55E]/20' : 'bg-[#CE1126]/20'}`}
+                  className={`curiosity-card ${isCorrect ? 'correct' : 'incorrect'} mb-6`}
                 >
-                  <div className="flex items-center gap-3">
-                    {isCorrect ? (
-                      <CheckCircle className="w-6 h-6 text-[#22C55E]" />
-                    ) : (
-                      <XCircle className="w-6 h-6 text-[#CE1126]" />
-                    )}
-                    <div>
-                      <p className={`font-bold ${isCorrect ? 'text-[#22C55E]' : 'text-[#CE1126]'}`}>
+                  {/* Ícone e status */}
+                  <div className="flex items-start gap-4">
+                    <div className={`curiosity-icon ${isCorrect ? 'correct' : 'incorrect'}`}>
+                      {isCorrect ? (
+                        <CheckCircle className="w-6 h-6" />
+                      ) : (
+                        <XCircle className="w-6 h-6" />
+                      )}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <p className={`font-bold text-lg mb-1 ${isCorrect ? 'text-[#166534]' : 'text-[#991B1B]'}`}>
                         {isCorrect ? t('correct') : t('incorrect')}
                       </p>
+                      
+                      {/* Resposta correta se errou */}
                       {!isCorrect && (
-                        <p className="text-[#0F172A] font-medium">
-                          {t('theCorrectAnswer')} {correctAnswer}
+                        <p className="text-[#0F172A] font-medium mb-3">
+                          {t('theCorrectAnswer')} <strong>{correctAnswer}</strong>
                         </p>
+                      )}
+                      
+                      {/* ALTERAÇÃO: Curiosidade sobre a pergunta */}
+                      {curiosidade && (
+                        <div className="mt-3 p-3 bg-white/50 rounded-xl">
+                          <div className="flex items-start gap-2">
+                            <Lightbulb className="w-5 h-5 text-[#FFD100] flex-shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-[#475569] uppercase mb-1">
+                                {lang === 'es' ? 'Curiosidad' : 'Curiosidade'}
+                              </p>
+                              <p className="text-sm text-[#0F172A]">{curiosidade}</p>
+                            </div>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -318,7 +404,7 @@ export default function Quiz() {
               )}
             </AnimatePresence>
 
-            {/* Next button */}
+            {/* Botão próxima/terminar */}
             {showResult && (
               <motion.button
                 onClick={handleNext}
@@ -335,9 +421,9 @@ export default function Quiz() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Score indicator */}
-        <div className="fixed bottom-6 right-6 bg-white border-2 border-[#0F172A] rounded-xl px-4 py-2 shadow-[4px_4px_0px_#0F172A]">
-          <p className="font-bold text-[#0F172A]">
+        {/* Indicador de pontuação flutuante */}
+        <div className="fixed bottom-6 right-6 bg-[#003893] text-white border-2 border-[#0F172A] rounded-xl px-4 py-2 shadow-[4px_4px_0px_#0F172A]">
+          <p className="font-bold">
             {t('score')}: {score}/{currentIndex + (showResult ? 1 : 0)}
           </p>
         </div>

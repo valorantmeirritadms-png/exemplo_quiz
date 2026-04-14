@@ -1,12 +1,23 @@
+/**
+ * Página de Registo
+ * 
+ * ALTERAÇÕES:
+ * - Corrigido problema do ícone sobrepondo o texto do input
+ * - Adicionados mais detalhes visuais com azul
+ * - Todos os elementos comentados
+ */
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import Header from '../components/Header';
-import { Input } from '../components/ui/input';
 import { Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 
+/**
+ * Formata erros da API para exibição amigável
+ */
 function formatApiErrorDetail(detail) {
   if (detail == null) return "Something went wrong. Please try again.";
   if (typeof detail === "string") return detail;
@@ -17,16 +28,22 @@ function formatApiErrorDetail(detail) {
 }
 
 export default function Register() {
+  // Estados do formulário
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
+  // Hooks de contexto
   const { register } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
+  /**
+   * Handler do submit do formulário
+   * Regista novo utilizador via API
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -46,6 +63,7 @@ export default function Register() {
     <div className="min-h-screen bg-[#FFFDF7]" data-testid="register-page">
       <Header />
       
+      {/* Container centralizado */}
       <div className="flex items-center justify-center px-4 py-12 md:py-20">
         <motion.div
           className="auth-card"
@@ -53,13 +71,17 @@ export default function Register() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
+          {/* Cabeçalho do card - ALTERAÇÃO: Usando azul */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-[#003893] border-2 border-[#0F172A] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-[4px_4px_0px_#0F172A]">
               <span className="text-3xl">🇨🇴</span>
             </div>
             <h1 className="text-2xl font-black text-[#0F172A]">{t('createAccount')}</h1>
+            {/* ALTERAÇÃO: Subtítulo com cor azul */}
+            <p className="text-[#003893] font-medium mt-1">Quiz Colômbia</p>
           </div>
 
+          {/* Mensagem de erro */}
           {error && (
             <motion.div
               className="bg-[#CE1126]/10 border-2 border-[#CE1126] rounded-xl p-4 mb-6 flex items-start gap-3"
@@ -71,55 +93,62 @@ export default function Register() {
             </motion.div>
           )}
 
+          {/* Formulário de registo */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Campo de nome */}
             <div>
               <label className="block text-sm font-bold text-[#0F172A] mb-2">
                 {t('name')}
               </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#475569]" />
-                <Input
+              {/* ALTERAÇÃO: Container com classe para posicionamento correto do ícone */}
+              <div className="input-with-icon">
+                <User className="input-icon w-5 h-5" />
+                <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t('enterName')}
-                  className="input-brutalist pl-12"
+                  className="input-brutalist"
                   required
                   data-testid="name-input"
                 />
               </div>
             </div>
 
+            {/* Campo de email */}
             <div>
               <label className="block text-sm font-bold text-[#0F172A] mb-2">
                 {t('email')}
               </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#475569]" />
-                <Input
+              {/* ALTERAÇÃO: Container com classe para posicionamento correto do ícone */}
+              <div className="input-with-icon">
+                <Mail className="input-icon w-5 h-5" />
+                <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('enterEmail')}
-                  className="input-brutalist pl-12"
+                  className="input-brutalist"
                   required
                   data-testid="email-input"
                 />
               </div>
             </div>
 
+            {/* Campo de password */}
             <div>
               <label className="block text-sm font-bold text-[#0F172A] mb-2">
                 {t('password')}
               </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#475569]" />
-                <Input
+              {/* ALTERAÇÃO: Container com classe para posicionamento correto do ícone */}
+              <div className="input-with-icon">
+                <Lock className="input-icon w-5 h-5" />
+                <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t('enterPassword')}
-                  className="input-brutalist pl-12"
+                  className="input-brutalist"
                   required
                   minLength={6}
                   data-testid="password-input"
@@ -127,6 +156,7 @@ export default function Register() {
               </div>
             </div>
 
+            {/* Botão de submit - ALTERAÇÃO: Usando estilo secundário (azul) */}
             <motion.button
               type="submit"
               className="btn-secondary w-full flex items-center justify-center gap-2"
@@ -145,12 +175,20 @@ export default function Register() {
             </motion.button>
           </form>
 
+          {/* Link para login */}
           <p className="text-center mt-6 text-[#475569]">
             {t('hasAccount')}{' '}
             <Link to="/login" className="text-[#003893] font-bold hover:underline" data-testid="login-link">
               {t('login')}
             </Link>
           </p>
+
+          {/* ALTERAÇÃO: Decoração visual com cores da bandeira */}
+          <div className="flex justify-center gap-2 mt-6">
+            <div className="w-8 h-2 bg-[#FFD100] rounded-full"></div>
+            <div className="w-8 h-2 bg-[#003893] rounded-full"></div>
+            <div className="w-8 h-2 bg-[#CE1126] rounded-full"></div>
+          </div>
         </motion.div>
       </div>
     </div>
