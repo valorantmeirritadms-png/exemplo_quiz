@@ -31,7 +31,7 @@ function App() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/exemplo_quiz">
           <Routes>
             {/* Página inicial - pública */}
             <Route path="/" element={<Home />} />
