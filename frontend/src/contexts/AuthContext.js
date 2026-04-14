@@ -20,7 +20,19 @@ export function AuthProvider({ children }) {
       const response = await axios.get(`${API}/auth/me`, { withCredentials: true });
       setUser(response.data);
     } catch (error) {
-      setUser(false);
+      // Se o access token expirou (401), tenta fazer refresh automático
+      if (error.response?.status === 401) {
+        try {
+          await axios.post(`${API}/auth/refresh`, {}, { withCredentials: true });
+          const retryResponse = await axios.get(`${API}/auth/me`, { withCredentials: true });
+          setUser(retryResponse.data);
+        } catch (refreshError) {
+          // Refresh também falhou — utilizador tem de fazer login novamente
+          setUser(false);
+        }
+      } else {
+        setUser(false);
+      }
     } finally {
       setLoading(false);
     }
